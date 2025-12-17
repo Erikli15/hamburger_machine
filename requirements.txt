@@ -31,7 +31,7 @@ pandas>=2.0.0 # Dataanalys
 numpy>=1.24.0 # Numeriska beräkningar
 
 # Konfiguration
-pyyaml>=6.0 YAML-filer
+pyyaml>=6.0 # YAML-filer
 python-dotenv>=1.0.0 # Miljövariabler
 
 # GUO (för lokalt panel)

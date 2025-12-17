@@ -1,0 +1,72 @@
+# Kärnpaket
+python>=3.9
+
+# Webbgränwssnitt
+flask>=2.3.0
+flask-spcketio>=5.3.0
+flask-sqlalchemy>=3.0.0
+flask-cors>=4.0.0
+jinja2>=3.1.0
+
+# Databas
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0 # För PostgerSQL
+# eller
+pymysql>=1.0.0 # För MySQL
+
+# Maskinvarukontroll
+RPi.GPIO>=0.7.0 # För Raspberry Pi
+Adafruit-DHT>=1.4.0 # Temperatur-/fuktsensorer
+pyserial>=3.5 # Seriell kommunikation
+smbus2>=0.4.0 # I2C kommunikation
+gpiozero>=1.6.0 # Enklare GPIO-kontroll
+
+# Realtidsfunktioner
+schedule>=1.2.0 # Schemaläggning
+python-crontab>=2.6.0 # Cron-jobb
+apscheduler>=3.10.0 # Avancerad schemaläggning
+
+# Datahantering
+pandas>=2.0.0 # Dataanalys
+numpy>=1.24.0 # Numeriska beräkningar
+
+# Konfiguration
+pyyaml>=6.0 YAML-filer
+python-dotenv>=1.0.0 # Miljövariabler
+
+# GUO (för lokalt panel)
+tkinter # Inbyggt i Python
+# eller
+# customtkinter>=5.0.0 # Modernare Tkinter
+# PyQt5>=5.15.0 # Alternativ GUI
+
+# API och nätverk
+requests>=2.28.0 # HTTP-förfrågningar
+websockets>=11.0.0 # WebSocket support
+fastapi>=0.100.0 # Alternativt API (snabbare än Flask)
+
+# Loggning
+loguru>=0.7.0 # Enklel loggning
+structlog>=23.1.0 # Strukturerad loggning
+
+# Testning
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.11.0
+
+# Säkerhet
+cryptography>=41.0.0 # Kryptering
+argon2-cffi>=21.3.0 # Lösenordshashning
+
+# Medelanden/Notifikationer
+twilio>=8.0.0 # SMS-notifikationer
+python-telegram-bot>=20.0.0 # Telegram-bot
+
+# Visualisering
+matplotlib>=3.7.0 # Grafer/diagram
+plotly>=5.15.0 # Interaktiva grafer
+
+# Diverse
+pytz>=2023.0 # Tidszoner
+pillow>=10.0.0 # Bildhantering
+openpyxl>=3.1.0 # Excel-filer

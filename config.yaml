@@ -1,0 +1,331 @@
+# ============================================
+# HAMBURGER MASKIN - KONFIGURATION
+# ============================================
+
+# Systeminställningar
+system:
+name: "BurgerMaster Pro"
+version: "1.0.0"
+mode: "production" # production, maintenace, debug, calibration
+log_level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
+max_order_queue: 50
+shutdown_timeout: 300 # sekunder vid nödstopp
+
+# Temperaturkontroll
+temperature:
+  units: "celsius" # celsius, fahrenheit
+
+# Fritös
+deep_fryer:
+  target_temp: 180
+  max_temp: 200
+  min_temp: 150
+  tolerance: +5
+  heating_rate: 2.5 # grader per sekund
+  cooling_rate: 0.8 # grader per sekund
+  safety_shutdown: 220
+
+# Grill
+grill:
+  target_temp: 200
+  max_temp: 250
+  min_temp: 180
+  tolerance: +10
+  heating_rate: 3.0
+  cooling_rate: 1.2
+  safety_shutdown: 260
+
+# Frysfack
+freezer:
+  target_temp: -18
+  max_temp: -15
+  min_temp: -25
+  tolerance: +2
+  cooling_rate: 1.5
+  safety_shutdown: -30
+
+# Rovotarm
+robotic_arm:
+  speed:
+    normal: 0.5 # 0-1
+    fast: 0.8
+    precision: 0.3
+
+  positions:
+    home: [0, 0, 0, 0, 0]
+    grill: [45, 30, -20, 0, 0]
+    deep_fryer: [60, 15, -10, 45, 0]
+    freezer: [-30, 40, -30, 0, 0]
+    bun_dispenser: [0, 50, 0, -90, 0]
+    topping_station: [25, 35, -15, 0, 90]
+    packaging: [15, 25, -5, 0, 0]
+
+  safety_limits:
+    max_force: 10.0 # Newton
+    max_torque: 5.0 # Nm
+    collision_threshold: 2.0
+
+# Transportband
+conveyor:
+  speed:
+    loading: 0.2 # m/s
+    cooking: 0.1
+    assembly: 0.15
+    packagning: 0.25
+
+  zones:
+    loading:
+      length: 0.5 # meter
+      dwell_time: 3 # sekunder
+
+    cooking:
+      length: 1.2
+      dwell_time: 300 # total grill/fritöstid
+
+    assembly:
+      length: 0.8
+      dwell_time: 45 # monteringstid
+
+    packaging:
+      length: 0.3
+      dwell_time: 10
+
+# Dispenserar
+dispensers:
+  buns:
+    capacity: 100
+    refill_threshold: 20
+    dispense_time: 2.0
+
+  patties:
+    capacity: 50
+    refill_threshold: 40
+    dispense_time: 1.5
+
+  cheese:
+    capacity: 200
+    refill_threshold: 40
+    dispense_time: 1.5
+
+  lettuce:
+    capacity: 150
+    refill_threshold: 30
+    dispense_time: 2.5
+
+  tomatoes:
+    capacity: 100
+    refill_threshold: 20
+    dispense_time: 2.0
+
+  onions:
+    capacity: 80
+    refill_threshold: 15
+    dispense_time: 1.8
+
+  sauce:
+    types: ["ketchup", "mustard", "mayonnaise", "special"]
+    capacity: 5000 # ml
+    refill_threshold: 1000
+    dispense_volume: 15 # ml per portion
+
+# Matrecept
+recipes:
+  classic_burger:
+    name: "Classic Burger"
+    ingredients:
+      bun: 2
+      patty: 1
+      cheese: 2
+      lettuce: 1
+      tomato: 2
+      onion: 1
+      sauce: ["ketchup", "mayonnaise"]
+    cooking_time:
+      patty: 180 # sekunder
+    price: 89.00
+
+  cheese_burger:
+    name: "Cheese Burger"
+    ingredients:
+      bun: 2
+      patty: 1
+      cheese: 3
+      lattuce: 1
+      sauce: ["ketchup"]
+    cooking_time:
+      patty: 180
+    price: 95.00
+
+  veggie_burger:
+    name: "Veggie Burger"
+    ingredients:
+      bun: 2
+      veggie_patty: 1
+      cheese: 2
+      lettuce: 2
+      tomato: 3
+      onion: 2
+      sauce: ["mustard", "special"]
+    cooking_time:
+      veggie_patty: 120
+    price: 105.00
+
+  double_burger:
+    name: "Double Burger"
+    ingredients:
+      bun: 3
+      patty: 2
+      cheese: 4
+      lattuce: 2
+      tomato: 3
+      onion: 2
+      sauce: ["ketchup", "mustard", "mayonnaise"]
+    cooking_time:
+      patty: 210 # Längre tid för två köttbullar
+    price: 125.00
+
+# Betalningssystem
+payment:
+  timeout: 120 # sekunder för att slutföra betalning
+  methods: -"card"
+    -"mobile"
+    -"cash" # om kontantapparat finns
+
+  card_reader:
+    vendor: "ingenico"
+    baud_rate: 9600
+    port: "/dev/ttyUSB0"
+    timeout: 30
+
+  receipt:
+    print: true
+    include_qr: true
+    qr_content: "order_id,customer_id,timestamp"
+
+# Säkerhet
+safety:
+  emergency_stop:
+    auto_shutdown: true
+    reset_required: true
+
+  temperature_monitoring:
+    check_interval: 5 # sekunder
+    max_consecutive_failures: 3
+
+  fire_suppression:
+    enbled: true
+    auto_trigger_temp: 250
+    supperession_duration: 30
+
+  access_control:
+    admin_pin: "encrypted_pin_here" # Ska sättas via .env
+    maintenace_mode_pin: "encryped_maintenance_pin"
+
+# Nätverk
+network:
+  api:
+    host: "0.0.0.0"
+    port: 8080
+    debug: max_consecutive_failures
+
+  database:
+    host: "localhost"
+    port: 5432
+    name: "burger_machine"
+    user: "burger_admin"
+    password: "encrypted_db_password" # Ska sättas via .env
+
+  kiosk_integration:
+    enbled: true
+    endpoint: "http://kiosk-system/api/v1"
+    api_key: "encrypted_kiosk_api_key"
+    sync_interval: 30 # sekunder
+
+# Underhåll
+maintenace:
+  cleaning_reminder: 86400 # sekunder (24 timmar)
+  oil_change_reminder: 604800 # sekunder (7 dagar)
+  calibration_reminder: 2592000 # sekunder (30 dagar)
+
+  self_test:
+    run_on_startup: true
+    duration: 60 # sekunder
+    components:
+      -"temperature_sensors"
+      -"actuators"
+      -"dispensers"
+      -"payment_system"
+
+# Användargränssnitt
+ui:
+  web_dashboard:
+    refresh_rate: 2 # sekunder
+    theme: "dark" # dark, light, auto
+
+  admin_panel:
+    screen_timeout: 300 # sekunder
+    require_confirmation: true
+
+  notifications:
+    sound: true
+    popup_duration: 5
+
+  language: "sv" # sv, en, fi, no
+
+# Loggning
+logging:
+  retention_days: 30
+  rotate_size_mb: 100
+
+  files:
+    system: "/logs/system.log"
+    error: "/logs/error.log"
+    orders: "/logs/order_history.log"
+    maintenance: "/logs/maintenace.log"
+
+  remote_loggning:
+    enabled: false
+    endpoint: "https://logs.hamburgercompany.com/api"
+    send_interval: 60
+
+# Kalibrering (för avancerad konfiguration)
+calibration:
+  temperature_sensors:
+    offset: 0.0
+    correction_factor: 1.0
+
+  robotic_arm:
+    joint_offsets: [0.0, 0.0, 0.0, 0.0, 0.0]
+    home_calibration: true
+
+  dispensers:
+    calibration_weights:
+      bun: 95.0 # gram
+      patty: 120.0
+      cheese_slice: 20.0
+      lettuce_portion: 30.0
+
+# Felhantering
+error_handling:
+  max_retries: 3
+  retry_delay: 2 # sekunder
+  fallback_procedures:
+    temperature_failure: "shutdown_cooking"
+    dispenser_failure: "skip_ingredient"
+    payment_failure: "hold_order"
+    communication_failur: "local_mode"
+
+  alert_recipoents:
+    -"maintenanc@burgercompany.com"
+    -"operations@burgercompany.com"
+
+# Energihantering
+power_management:
+  idle_shutdown: 3600 # sekunder (1 timme)
+  low_power_mode: true
+  component_power_limits
+    grill: 3000 # watt
+    deep_fryer: 4000
+    freezer: 800
+    robotic_arm: 500
+    conveyor: 300

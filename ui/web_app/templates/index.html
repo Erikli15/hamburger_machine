@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamburgermaskin - Kontrollpanel</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/style.css") }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+         <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-hamburger"></i>
+                    <h1>Hamburgermaskin Kontrollpanel</h1>
+                </div>
+                <div class="status-indicator" id="systemStatus">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Laddar...</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="datetime" id="currentDataTime">
+                    <i class="far fa-clock"></i>
+                    <span id="datetime"></span>
+                </div>
+                <div class="user.info">
+                    <i class="fas fa-user.circle"></i>
+                    <span>Operatör: <strong id="operatorName">Admin</strong></span>
+                </div>
+            </div>
+         </header>
+
+         <!-- Main Content -->
+          <main class="main-content">
+            <!-- Systemöversikt -->
+             <section class="dashboard-section">
+                <h2><i class="fas fa-tachometer-all"></i> Systemöversikt</h2>
+                <div class="dashboard-grid">
+                    <!-- Temperaturöversikt -->
+                     <div class="card temperature-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-thermometer-half"></i> Temperaturer</h3>
+                            <a href="/temperature" class="btn-link">Detaljer <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="card-content">
+                            <div class="temp-item">
+                                <span class="temp-label">Fritös</span>
+                                <div class="temp-value-container">
+                                    <span class="temp-value" id="fryerTemp">--</span>
+                                    <span class="temp-unit">°C</span>
+                                    <div class="temp-status" id="fryerStatus"></div>
+                                </div>
+                            </div>
+                            <div class="temp-item">
+                                <span class="temp-label">Grill</span>
+                                <div class="temp-value-container">
+                                    <span class="temp-value" id="grillTemp">--</span>
+                                    <span class="temp-unit">°C</span>
+                                    <div class="temp-status" id="grillStatus"></div>
+                                </div>
+                            </div>
+                            <div class="temp-item">
+                                <span class="temp-label">Frys</span>
+                                <div class="temp-value-container">
+                                    <span class="temp-value" id="freezerTemp">--</span>
+                                    <span class="temp-unit">°C</span>
+                                    <div class="temp-status" id="freezerStatus"></div>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+
+                     <!-- Orderstatus -->
+                      <div class="card order-card">
+                        <div class="order-header">
+                            <h3><i class="fas fa.clipboard-list"></i> Orderstatus</h3>
+                            <a href="/orders" class="btn-link">Visa alla <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="card-content">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-value" id="ordersToday">0</div>
+                                    <div class="state-label">Idag</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="activeOrders">0</div>
+                                    <div class="state-label">Aktiva</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="avgPrepTime">--</div>
+                                    <div class="state-label">Genomsnittlig tid</div>
+                                </div>
+                            </div>
+                            <div class="recent-orders">
+                                <h4>Senaste ordrar</h4>
+                                <div class="order-list" id="recentOrders">
+                                    <div class="empty-state">Inga ordrar ännu</div>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+
+                      <!-- Inventeringsstatus -->
+                       <div class="card inventory-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-boxes"></i> Inventering</h3>
+                            <a href="/inventory" class="btn-link">Detaljer <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="card-content">
+                            <div class="inventory-summary">
+                                <div class="inventory-item">
+                                    <span class="inventory-label">Hamburgare</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="pattyProgress" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="inventory-value" id="pattyCount">0/100</span>
+                                </div>
+                                <div class="inventory-item">
+                                    <span class="inventory-label">Bröd</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="bunProgress" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="inventory-value" id="bunCount">0/100</span>
+                                </div>
+                                <div class="inventory-item">
+                                    <span class="inventory-label">Ost</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="cheeseProgress" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="inventory-value">0/100</span>
+                                </div>
+                                <div class="inventory-item">
+                                    <span class="inventory-label">Sallad</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="lettuceProgress" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="inventory-value" id="lettuceCount">0/100</span>
+                                </div>
+                            </div>
+                            <div class="inventory-alerts" id="inventoryAlerts">
+                                <!-- Alerts will be inserted here -->
+                            </div>
+                        </div>
+                       </div>
+
+                       <!-- Snabbkontroller -->
+                        <div class="card quick-controls-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-slider-h"></i> Snabbkontroller</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="control-buttons">
+                                    <button class="btn btn-primary" id="startSystemBtn">
+                                        <i class="fas fa-play"></i> Starta System
+                                    </button>
+                                    <button class="btn btn-warning" id="pauseSystemBtn" disabled>
+                                        <i class="fas fa-pause"></i> Pausa System
+                                    </button>
+                                    <button class="btn btn-danger" id="emergencyStopBtn">
+                                        <i class="fas fa-circle"></i> Nödstopp
+                                    </button>
+                                    <button class="btn btn-secondary" id="maintenanceModeBtn">
+                                        <i class="fas fa-tools"></i> Underhållsläge
+                                    </button>
+                                </div>
+                                <div class="system-info">
+                                    <div class="info-item">
+                                        <span>Upptid:</span>
+                                        <strong id="uptime">00:00:00</strong>
+                                    </div>
+                                    <div class="info-item">
+                                        <span>Systemversion:</span>
+                                        <strong id="systemVersion">v1.0.0</strong>
+                                    </div>
+                                    <div class="info-item">
+                                        <span>Senaste underhåll:</span>
+                                        <strong id="lastMaintenance">2023-10-15</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+             </section>
+
+             <!-- Aviseringar och Loggar -->
+              <section class="alerts-section">
+                <div class="alerts-container">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Aviseingar</h3>
+                    <div class="alerts-list" id="alertsList">
+                        <div class="alert-item alert-info">
+                            <i class="fas fa-info-cercle"></i>
+                            <span>System startat. Alla komponenter verkar fungera normalt.</span>
+                            <span class="alert-time">Nyss</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="logs-container">
+                    <h3><i class="fas fa-history"></i> Senaste aktivitet</h3>
+                    <div class="logs-list" id="activityLogs">
+                        <div class="log-item">
+                            <span class="log-time">10:32:15</span>
+                            <span class="log-message">System startat av Admin</span>
+                        </div>
+                    </div>
+                </div>
+              </section>
+
+              <!-- Produktinosstatus -->
+               <section class="production-section">
+                <h2><i class="fas fa-industry"></i> Produktionsstatus</h2>
+                <div class="prodution-flow">
+                    <div class="flow-step active">
+                        <div class="step-icon">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <div class="step-label">Order Mottagen</div>
+                        <div class="step-count" id="stepOrder">0</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="step-label">Tillagning</div>
+                        <div class="step-count" id="stepCooking">0</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-icon">
+                            <i class="fas fa-conveyor-belt-alt"></i>
+                        </div>
+                        <div class="step-label">Montering</div>
+                        <div class="step-count" id="stepAssembly">0</div>
+                    </div>
+                    <div class="flow-step">
+                    <div class="step-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="step-label"> Klar för Uthämtning</div>
+                    <div class="step-count">0</div>
+                </div>
+                </div>
+                <div class="current-production">
+                    <h4>Aktiv produktion</h4>
+                    <div class="production-item" id="currentProduction">
+                        <div class="empty-state">Ingen aktiv produktion</div>
+                    </div>
+                </div>
+               </section>
+          </main>
+
+          <!-- Footer -->
+           <footer class="footer">
+                <div class="footer-left">
+                    <p>&copy; 2023 Hamburgermaskin AB. Alla rättigheter förbehållna.</p>
+                </div>
+                <div class="footer-right">
+                    <p>Systemstatus <span id="footerStatus">Laddar...</span></p>
+                    <p>Sensate uppdatering: <span id="lastUpdate">--:--:--</span></p>
+                </div>
+           </footer>
+    </div>
+
+    <!-- JavaScript -->
+     <script src="{{ url_for("static", filename="js/dashboard.js") }}"></script>
+     <script>
+        // Initialisering när sidan laddas
+        document.addEventListener("DOMContentLoaded", function() {
+            // Uppdatera datum och tid
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            // Ladda inital data
+            loadDashboardData();
+
+            // Uppdatera data var 5:e sekunder
+            setInterval(loadDashboardData, 5000);
+
+            // Event listners för knappar
+            document.getElementById("startSystemBtn").addEventListener("click", startSystem);
+            document.getElementById("pauseSystemBtn").addEventListener("click", pauseSystem);
+            document.getElementById("emergencyStop").addEventListener("click", emergencyStop);
+            document.getElementById("maintenanceModeBtn").addEventListener("click", toggleMaintenance);
+
+            // Uppdatera upptid varje sekund
+            setInterval(updateDateTime, 1000);
+        });
+     </script>
+</body>
+</html>

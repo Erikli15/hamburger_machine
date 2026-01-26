@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamburger Machine - Orderhantering</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script> src="https://code.jquery.com/jquery-3.6.0.min.js"</script>
+</head>
+<body>
+    <!-- Header -->
+     <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-hamburger"></i>
+                <h1>Hamburger Machine</h1>
+                <span class="subtitle">Orderhantering</span>
+            </div>
+            <nav class="nav">
+                <a href="{{ url_for("index")}}" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="{{ url_for("temperature") }}" class="nav-link"><i class="fas fa-thermometer-half"></i> Temperatur</a>
+                <a href="{{ url_for("orders") }}" class="nav-link"><i class="fas da-clipboard-list"></i> Order</a>
+                <a href="{{ url_for("inventory") }}" class="nav-link"><i class="fas fa-boxes"></i> Inventering</a>
+                <a href="#" class="nav-link" id="admin-btn"><i class="fas fa-cog"></i> Inställningar</a>
+            </nav>
+            <div class="system-status">
+                <span class="status-indicator active"></span>
+                <span id="current-time">{{ current_time }}</span>
+            </div>
+        </div>
+     </header>
+
+     <!-- Main Content -->
+      <main class="container">
+        <div class="page-header">
+            <h2><i class="fas fa-clipboard-list"></i> Orderhantering</h2>
+            <div class="controls">
+                <button class="btn btn-primary" id="new-order.btn">
+                    <i class="fas fa-plus"></i> Ny Order
+                </button>
+                <button class="btn btn-secondary" id="refresh-btn">
+                    <i class="fas fa-sync-alt"></i> Uppdatera
+                </button>
+                <button class="btn btn-danger" id="cancel-all-btn">
+                    <i class="fas fa-time-circle"></i> Avbryt Alla
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+         <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #4CAF50;">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="pending-count">0</h3>
+                    <p>Väntande Order</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #2196f3;">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="progress-count">0</h3>
+                    <p>Behandlas</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #FF9800;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="completed-count">0</h3>
+                    <p>Avslutade Idag</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #F44336;">
+                    <i class="fas fa-time-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="cancelled-count">0</h3>
+                    <p>Avbrutna Idag</p>
+                </div>
+            </div>
+         </div>
+
+         <!-- Filter and Search -->
+          <div class="filter-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="shearch-orders" placeholder="Sök ordernummer eller kund...">
+            </div>
+            <div class="filter-controls">
+                <select id="status-fitlter" class="filter-select">
+                    <option value="all">Alla Statusar</option>
+                    <option value="pending">Väntande</option>
+                    <option value="processing">Behandlas</option>
+                    <option value="completed">Avslutade</option>
+                    <option value="cancelled">Avbrutna</option>
+                </select>
+                <select id="time-filter" class="filter-select">
+                    <option value="today">Idag</option>
+                    <option value="hour">Senaste Timmen</option>
+                    <option value="weel">Denna Vecka</option>
+                    <option value="all">Alla</option>
+                </select>
+            </div>
+          </div>
+
+          <!-- Orders Table -->
+           <div class="table-container">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Tid</th>
+                        <th>Kund</th>
+                        <th>Produkter</th>
+                        <th>Totalt</th>
+                        <th>Stats</th>
+                        <th>Åtgärder</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                    <!-- Orders will be populated by JavaScript -->
+                     <tr class="loading-row">
+                        <td colspan="7">
+                            <div class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <span>Laddar order...</span>
+                            </div>
+                        </td>
+                     </tr>
+                </tbody>
+            </table>
+           </div>
+
+           <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" id="prev-page" disabled>
+                    <i class="fas fa-chevron-left"></i> Föregående 
+                </button>
+                <span class="page-info">Sida <span id="current-page">1</span> av <span id="total-pages">1</span></span>
+                <button class="page-btn" id="next-page">Nästa <i class="fas fa-chevron-right"></i></button>
+            </div>
+      </main>
+
+      <!-- New Order Modal -->
+       <div id="new-order-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-hamburger"></i> Ny Order</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="customer-name"><i class="fas fa-user"></i> Kundnamn</label>
+                    <input type="text" id="customer-name" placeholder="Ange kundnamn...">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-utensils"></i>Välj Produkter</label>
+                    <div class="products-grid" id="products-selector">
+                        <!-- Products will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-list"></i> Orderdetaljer</label>
+                    <div class="order-summary" id="order-summary">
+                        <p class="empty-summary">Inga produkter vald</p>
+                    </div>
+                </div>
+
+                <div class="total-section">
+                    <h4>Totalt: <span id="order-total">0 kr</span></h4>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" close-modal>Avbryt</button>
+                <button class="btn btn-primary" id="submit-order">Skapa Order</button>
+
+            </div>
+        </div>
+       </div>
+
+       <!-- Footer -->
+
+        <footer class="footer">
+            <div class="container">
+                <p>Hamburger Machine System &copy; 2024</p>
+                <p class="system-version">Version 2.1.0 | Order API v1.3</p>
+            </div>
+        </footer>
+
+        <!-- JavaScript -->
+         <script src="{{ url_for("static", filename="js/orders.js") }}"></script>
+         <script>
+            // Inirialize when page loads
+            $(document).ready(function() {
+                loadOrders();
+                loadProducts();
+                updateStats();
+            }, 30000);
+         </script>
+</body>
+</html>

@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperaturöversikt - Hamburgermaskin</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/style.css") }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for("static", filename="js/dashboard.js") }}"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+         <header class="header">
+            <div class="header-left">
+                <h1><i class="fas fa-thermometer-half"></i> Temperaturöversikt</h1>
+                <p class="subtitle">Realtidsövervakning av maskinens temperaturzoner</p>
+            </div>
+            <div class="header-right">
+                <div class="system.status">
+                    <span class="status-indicator active"></span>
+                    <span class="status-text">System Aktivt</span>
+                </div>
+                <div class="header-actions">
+                    <a href="/" class="btn btn-secondary"><i class="fas fa-home"></i> Huvudpanel</a>
+                    <a href="/orders" class="btn btn-secondary"><i class="fas fa-clpboard-list"></i> Order</a>
+                    <button id="refresh-btn" class="btn btn-primary"><i class="fas fa-sync-alt"></i> Uppdatera</button>
+                </div>
+            </div>
+         </header>
+         <!-- Alert section -->
+          <div id="alert-container" class="alert-container">
+            <!-- Alerts will be dynamically inserted here -->
+          </div>
+
+          <!-- Main Content -->
+           <main class="contain">
+            <!-- Temperature Sumary Cards -->
+             <section class="cards-grid">
+                <div class="card temperature-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-fire"></i> Grill</h3>
+                        <span class="card-badge" id="grill-status">Aktiv</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="temperature-display">
+                            <div class="temp-value" id="grill-temp">185°C</div>
+                            <div class="temp-label">Nuvarande temperatur</div>
+                        </div>
+                        <div class="temp-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="grill-progress" style="width: 74%;"></div>
+                            </div>
+                            <div class="temp-range">
+                                <span>150°C</span>
+                                <span id="grill-target">Mål: 200°C</span>
+                                <span>250°C</span>
+                            </div>
+                        </div>
+                        <div class="temp-controls">
+                            <button class="btn btn-sm btn-outline" onclick="adjustTemperature('grill', -5)">
+                                <i class="fas fa-minus"></i> 5°C
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fas-plus"></i> 5°C
+                            </button>
+                            <button class="btn btn-danger" onclick="toggleHeating('grill')" id="grill-toggle">
+                                <i class="fas fa-power-off"></i> Av
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card temperature-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-oil-can"></i> Fritös</h3>
+                        <span class="csrd-badge" id="fryer-status">Värmning</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="temperature-display">
+                            <div class="temp-value" id="fryer-temp">172°C</div>
+                            <div class="temp-label">Nuvarande temperatur</div>
+                        </div>
+                        <div class="temp-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="fryer-progress" style="width: 86%;"></div>
+                            </div>
+                            <div class="temp-range">
+                                <span>160°C</span>
+                                <span id="fryer-target">Mål: 175°C</span>
+                                <span>190°C</span>
+                            </div>
+                        </div>
+                        <div class="temp-controls">
+                            <button class="btn btn-sm btn-outline" onclick="adjustTemperature('fryer', -2)">
+                                <i class="fas fa-minus"></i> 2°C
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="adjustTemperature('fryer', 2)">
+                                <i class="fas fas-plus"></i> 2°C
+                            </button>
+                            <button class="btn btn-sm btn-warning" onclick="toggleHeating('fryer')" id="fryer-toggle">
+                                <i class="fas fa-power-off"></i> På
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card temperature-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-snowflake"></i> Frysfack</h3>
+                        <span class="card-badge" id="freezer-status">Normal</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="temperature-display">
+                            <div class="temp-value" id="freezer-temp">-18°C</div>
+                            <div class="temp-label">Nuvarande temperatur</div>
+                        </div>
+                        <div class="temp-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="freezer-progress" style="width: 60%;"></div>
+                            </div>
+                            <div class="temp-range">
+                                <span>-25°C</span>
+                                <span id="freezer-target">Mål: -18°C</span>
+                                <span>-10°C</span>
+                            </div>
+                        </div>
+                        <div class="temp-controls">
+                            <button class="btn btn-sm btn-outline" onclick="adjustTemperature('freezer' -1)">
+                                <i class="fas fa-minus"></i> 1°C
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fas-plus"></i> 1°C
+                            </button>
+                            <button class="btn btn-sm btn-info" onclick="toggleCooling('freezer')" id="freezer-toggle">
+                                <i class="fas fa-power-off"></i> På
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card temperature-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-hamburger"></i> Sammanställning</h3>
+                        <span class="card-badge" id="assembly-status">Normal</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="temperature-display">
+                            <div class="temp-value" id="assembly-temp">22°C</div>
+                            <div class="temp-label">Områdestemperatur</div>
+                        </div>
+                        <div class="temp-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="assembly-progress" style="width: 50%;"></div>
+                            </div>
+                            <div class="temp-range">
+                                <span>15°C</span>
+                                <span id="assembly-target">Mål: 20°C</span>
+                                <span>30 °C</span>
+                            </div>
+                        </div>
+                        <div class="temp-info">
+                            <p><i class="fas fa-info-circle"></i> Automatisk klimatkontroll aktiv</p>
+                        </div>
+                    </div>
+                </div>
+             </section>
+
+             <!-- Temperature History Chart -->
+              <section class="chart-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Temperaturhistorik (Senaste 30 min)</h3>
+                        <div class="time-selector">
+                            <button class="btn btn-sm btn-outline active" onclick="changeTimeRange('30min')">30min</button>
+                            <button class="btn btn-sm btn-outline" onclick="changeTimeRange('1h')">1 timme</button>
+                            <button class="btn btn-sm btn-outline" onclick="changeTimeRange('6h')">6 timmar</button>
+                            <button class="btn btn-sm btn-outline" onclick="changeTimeRange('24h')">24 timmar</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="temperatureChart"></canvas>
+                    </div>
+                </div>
+              </section>
+
+              <!-- Detailed Temperature Logs -->
+               <section class="logs-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clpboard-list"></i> Temperaturlogger</h3>
+                    <button class="btn btn-sm btn-primary" onclick="downloadTemperatureLogs()">
+                        <i class="fas fa-download"></i> Exportera loggar
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tidpunkt</th>
+                                    <th>Grill</th>
+                                    <th>Fritös</th>
+                                    <th>Frysfack</th>
+                                    <th>Sammanställning</th>
+                                    <th>Status</th>
+                                    <th>Åtgärd</th>
+                                </tr>
+                            </thead>
+                            <tbody id="temperatur-logs">
+                                <!-- Logs will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer">
+                        <div class="pagination">
+                            <button class="btn btn-sm btn-outline" onclick="prevPage()">
+                                <i class="fas fa-chevron-left"></i> Föregående
+                            </button>
+                            <span>Sida 1 av 5</span>
+                            <button class="btn btn-sm btn-outline" onclick="nextPage()">
+                                Nästa <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </div>
+               </section>
+
+               <!-- Temperature Settings -->
+                <section class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-cog"></i> Temperaturinställningar</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="temperature-settings" onsubmit="saveTemperatureSettings(event)">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="grill-target-temp">Grill måltemperatur (°C)</label>
+                                        <input type="number" id="grill-target-temp" min="150" max="250" step="5" value="200" class="form-control">
+                                        <small class="form-text">Rekommenderat: 180-220°C</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="fryer-target-temp">Fritös måltemperatur (°C)</label>
+                                        <input type="number" id="fryer-target-temp" min="160" max="190" step="1" value="175" class="form-control">
+                                        <small class="form-text">Rekommenderat: 170-180°C</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="freezer-target-temp">Frysfacket måltemperatur (°C)</label>
+                                        <input type="number" id="freezer-target-temp" min="-25" max="-10" step="1" value="-18" class="form-control">
+                                        <small class="form-text">Rekommenderat: -18 till -20</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="assembly-target-temp">Sammanställning måltemperatur (°C)</label>
+                                        <input type="number" id="assembly-target-temp" min="15" max="30" step="1"  value="20" class="form-control">
+                                        <small class="form-text">Rekommenderat 18-20°C</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="temp-tolerance">Temperaturtolerans (°C)</label>
+                                        <input type="number" id="temp-tolerance" min="1" max="10" step="1" value="3" class="form-control">
+                                        <small class="form-text">Tillåten avvikelse från måltemperatur</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="update-interval">Uppdateringsintervall</label>
+                                        <select id="update-interval" class="form-control">
+                                            <option value="2">2 sekunder</option>
+                                            <option value="5" selected> 5 secunder</option>
+                                            <option value="10">10 sekunder</option>
+                                            <option value="30">30 sekunder</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="auto-adjust">Automatisk temperaturjustering</label>
+                                        <div class="checkbox-group">
+                                            <input type="checkbox" id="auto-adjust" checked>
+                                            <label for="auto-adjust" class="checkbox-label">Aktiv</label>
+                                        </div>
+                                        <small class="form-text">Systemet justerar automatisk vid avvikelser</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="alert-threshold">Varningstökel (°C från mål)</label>
+                                        <input type="number" id="alert-threshold" min="1" max="20" step="1" value="10" class="form-control">
+                                        <small class="form-text">När en varning ska visas</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Spara inställningar
+                                    </button>
+                                    <button type="button" onclick="resetToDefaults()" class="btn btn-secondary">
+                                        <i class="fas fa-undo"></i> Återställ till standard
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+           </main>
+
+           <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <div class="footer-info">
+                        <p><i class="fas fa-clock"></i> Senaste uppdatering: <span id="last-update">Just nu</span></p>
+                        <p><i class="fas fa-server"></i> System-ID: HH-001 | Version: 2.1.4</p>
+                    </div>
+                    <div class="footer-links">
+                        <a href="/docs/temperature" class="footer-link">
+                            <i class="fas fa-book"></i> Dokumentation
+                        </a>
+                        <a href="/logs/temperature" class="footer-link">
+                            <i class="fas fa-file-alt"></i> Detaljerade loggar
+                        </a>
+                        <button onclick="showSystemDiagnodtics()" class="footer-link btn btn-link">
+                            <i class="fas fa-setethoscope"></i> Systemdiagnostik
+                        </button>
+                    </div>
+                </div>
+            </footer>
+    </div>
+
+    <!-- System Diognastics Modal-->
+     <div id="diagonostics-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-setethoscope"></i> Systemdiagnostik</h3>
+                <button class="close-modal" onclick="closeModal('diagonstics-modal')">&times</button>
+            </div>
+            <div class="modal-body">
+                <div class="diagonostics-info">
+                    <h4>temperaturstatus</h4>
+                    <div id="sensor-status-list">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                    <h4>Prestandamått</h4>
+                    <div id="performance-metrics">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="runFullDiagnostitcs()">
+                    <i class="fas fa-play"></i> Kör full diagnistik
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('diagonostics-modal')">
+                    Stäng
+                </button>
+            </div>
+        </div>
+     </div>
+    
+     <!-- JavaScript for Temperature Page-->
+      <script>
+        // Global variables
+        let currentPage = 1;
+        const logsPerPages = 10;
+        let temperatureChart = null;
+        let autoUpdateInterval = null;
+
+        // Initialixe page
+        document.addEventListener("DOMContentLoaded", function() {
+            initializeTenperatureChart();
+            loadTemperatureLogs();
+            startAutoUpdate();
+            updateSystemStatus();
+
+            // Set up refresh button
+            document.getElementById("refresh-btn").addEventListener("click", function () {
+                refreshAllData();
+            });
+
+            // Initalize from with current settings
+            loadCurrentSetting(); 
+        });
+
+        // Temperature adjustment functions
+        function adjustTemperature(zone, change) {
+            // This would normally make an API call
+            console.log(`Adjusting ${zone} temperature by ${change}°C`);
+
+            // Simulate API call
+            fetch(`/api/temperature/adjust/${zone}`, {
+                method:"POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ change })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showAlert(`Temperature för ${getZoneName(zone)} justera med ${change}°C`, "success");
+                updateTemperatureDisplay(zone, data.newTemperature);
+            })
+            .catch(error => {
+                showAlert(`Kunde inte justera temperatur: ${error.message}`, "error");
+            });
+        }
+
+        function tooleHeating(zone){
+            const button = document.getElementById(`${zone}-toggle`);
+            const isOn = button.textContent.includes("På");
+
+            // This would normally make an API call
+            fetch(`/api/temperature/toggle/${zone}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ turnOn: !isOn })
+            })
+            .then(resonse => resonse.json())
+            .then(data => {
+                const newState = data.isOn ? "På" : "Av";
+                button.innerHTML `<i class="fas fas-power-off"></i> ${newState}`;
+                button.className = `btn btn-sm ${data.isOn ? "btn-warning" : "btn-danger"}`;
+                
+                const statusElement = document.getElementById(`${zone}-status`);
+                statusElement.textContent = data.isOn ? "Aktiv" : "Inaktiv";
+
+                showAlert(`Värmning för ${getZoneName} ${data.isOn ? "aktiverad" : "avaktiverad"}`, "info");
+            })
+            .catch(error => {
+                showAlert(`Kunde inte ändra värmningsstatus: ${error.message}`, "error");
+            });
+        }
+
+        function toggleCooling(zone) {
+            // Similar implementation for cooling system
+            console.log(`Toogling cooling for ${zone}`);
+        }
+
+        function getZoneName(zone) {
+            const zones = {
+                "grill": "Grll",
+                "fryer": "Fritös",
+                "freezer": "Frysfack",
+                "assembly": "Sammansättning"
+            };
+            return zones[zone] || zone;
+        }
+
+        // Chart functions
+        function initializeTenperatureChart() {
+            const cxs = document.getElementById("temperatureChart").getContext("2d");
+
+            // Sample data - in production this would come from an API
+            const labels = [];
+            const now = new Date();
+            for (let i = 29; i >= 0; i--) {
+                const time = new Date(now.getTime() - i * 60000);
+                labels.push(time.getHours().toString().padStart(2, "0") + ":" + time.getMinutes().toString().padStart(2, "0"));
+            }
+
+            temperatureChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Grill",
+                            data: generateRandomData(185, 5, 30),
+                            borderColor: "#ff6b6b",
+                            backgroundColor: "rgba(255, 107, 107, 0.1)",
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: "Fritös",
+                            data: generateRandomData(172, 3, 30),
+                            borderColor: "#feca57",
+                            backgroundColor: "rgba(254, 202, 87, 0.1)",
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: "Frysfack",
+                            data: generateRandomData(-18, 2, 30),
+                            borderColor: "#54a0ff",
+                            backgroundColor: rgba(84, 160, 255, 0.1),
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: "Sammansättning",
+                            data: generateRandomData(22, 1, 30),
+                            borderColor: "#1dd1a1",
+                            backgroundColor: rgba(29, 209, 161, 0.1),
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRation: false,
+                    plugins: {
+                        legend: {
+                            position: "top",
+                        },
+                        tooltip: {
+                            mode: "index",
+                            instersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                                title: {
+                                    display: true,
+                                    text: "Temperatur (°C)"
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Tid"
+                                }
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: "nearest"
+                        }
+                    }
+            });
+        }
+
+        function generateRandomData(base, variation, count) {
+            const data = [];
+            for (let i = 0; i < count; i++) {
+                data.push(base + (Math.random() * variation * 2 - variation));
+            }
+            return data;
+        }
+
+        function changeTimeRange(range) {
+            // Update active button
+            document.querySelectorAll(".time-selector button").forEach(btn => {
+                btn.classList.remove("active");
+            });
+            event.target.classList.add("acrive");
+
+            // Update chart based on selected range
+            console.log(`Changing time range to ${range}`);
+            showAlert(`Tidintervall ändrat till ${range}`, "info");
+
+            // In production,this would fetch new data from API
+            // and update the chart
+        }
+
+        // Logs functions
+        function loadTemperatureLogs(page = 1) {
+            // This would normally fetch from API
+            const logs = generateSimpleLogs();
+            const start = (page - 1) * logsPerPages;
+            const end = start + logsPerPages;
+            const pageLogs = logs.slice(start, end);
+
+            const tbody = document.getElementById("temperature-logs");
+            tbody.innerHTML = "";
+
+            pageLogs.forEach(log => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                <td>${log.timestamp}</td>
+                <td>${log.grill}°C</td>
+                <td>${log.fryer}°C</td>
+                <td>${log.freezer}°C</td>
+                <td>${log.assembly}°C</td>
+                <td><span class="status-badge ${log.statusClass}">${log.status}</span></td>
+                <td>${log.action}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById("page-info").textContent = `Sida ${page} av ${Math.ceil(logs.length / logsPerPages)}`;
+            currentPage;
+        }
+
+        function generateSimpleLogs() {
+            const logs = [];
+            const now = new Date();
+            const status = ["Normal", "Varning", "Kritisk"];
+            const statusClasses = ["normal", "warning", "critical"];
+            const actions = ["Automatisk justering", "Manuell ändring", "Systemstart", "Underhåll"];
+
+            for (let i = 0; i < 50; i++) {
+                const time = new Date(now.getTime() - i * 60000);
+                const statusIndex = Math.floor(Math.random() * 3);
+
+                logs.push({
+                    timestamp: time.getHours().toString().padStart(2, "0") + ":" + time.getMinutes().toString().padStart(2, "0") + ":" + time.getSeconds().toString().padStart(2, "0"),
+                    grill: (185 + Math.random() * 10 - 5).toFixed(1),
+                    fryer: (172 + Math.random() * 6 - 3).toFixed(1),
+                    freezer: (-18 + Math.random() * 4 - 2).toFixed(1),
+                    assembly: (22 + Math.random() * 3 - 1.5).toFixed(1),
+                    statusClass: statusClasses[statusIndex],
+                    action: actions[Math.floor(Math.random() * actions.length)]  
+                });
+            }
+
+            return logs;
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                loadTemperatureLogs(currentPage - 1);
+            }
+        }
+
+        function nextPage() {
+            loadTemperatureLogs(currentPage + 1);
+        }
+
+        function downloadTemperatureLogs() {
+            // This would generate and download CSV file
+            showAlert("Temperaturloggar exporteras...", "info");
+            setTimeout(() => {
+                showAlert("Loggar exporterade som temperature_loggar-csv", "success");
+            }, 1500);
+        }
+
+        // Settings functions
+        function loadCurrentSetting() {
+            // This would fetch current setting from API
+            console.log("Loading current settings...");
+        }
+
+        function saveTemperatureSettings(event) {
+            event.preventDefault();
+
+            const settings = {
+                grillTarget: document.getElementById("grill-target-temp").value,
+                fryerTarget: document.getElementById("fryer-target-temp").value,
+                freezerTarget: document.getElementById("freezer-target-temp").value,
+                assemblyTarget: document.getElementById("assembly-target-temp").value,
+                tolerance: document.getElementById("temp-tolerance").value,
+                updateInterval: document.getElementById("update-interval").value,
+                autoAdjust: document.getElementById("auto-adjust").value,
+                alertThreshould: document.getElementById("alert-threshould").value
+            };
+
+            // This would normally make an API call
+            console.log("Saving settings:", settings);
+            showAlert("Inställningar sparade", "success");
+
+            // Update display with new targets
+            updateTargetDisplays(settings);
+        }
+
+        function resetToDefaults() {
+            if (confirm("Återställa alla temperaturinsällningar till standardvärden?")) {
+                // Reset from defaults
+                document.getElementById("grill-target-temp").value = 200;
+                document.getElementById("fryer-target-temp").value = 175;
+                document.getElementById("freezer-target-temp").value = -18;
+                document.getElementById("assembly-target-temp").value = 20;
+                document.getElementById("tem-tolerance").value = 3;
+                document.getElementById("update-interval").value = 5;
+                document.getElementById("auto-adjust").checked = true;
+                document.getElementById("alert-threshold").value = 10;
+
+                showAlert("Inställningar återställda till standard", "info");
+            }
+        }
+
+        function updateTargetDisplays(settings) {
+            document.getElementById("grill-target").textContent = `Mål: ${settings.grillTarget}°C`;
+            document.getElementById("fryer-target").textContent = `Mål: ${settings.fryerTarget}°C`;
+            document.getElementById("freezer-target").textContent = `Mål: ${settings.freezerTarget}°C`;
+            document.getElementById("assembly-target").textContent = `Mål: ${settings.assemblyTarget}°C`;
+        } 
+
+        // System functions
+        function startAutoUpdate() {
+            const interval = parseInt(document.getElementById("update-interval").value) * 1000;
+
+            if (autoUpdateInterval) {
+                clearInterval(autoUpdateInterval);
+            }
+
+            autoUpdateInterval = setInterval(() => {
+                refreshTemperatureData();
+            }, interval)
+        }
+
+        function refreshTemperatureData() {
+            // Simulate fetching new temperature data
+            const zones = ["grill", "fryer", "freezer", "assembly"];
+            zones.forEach(zone => {
+                const currentTemp = parseFloat(document.getElementById(`${zone}-temp`).textContent);
+                const change = (Math.random() * 2 -1); // Small random change
+                const newTemp = Math.max(0, currentTemp + change);
+                
+                updateTemperatureDisplay(zone, newTemp);
+            });
+
+            // Update last upadate time
+            const now = new Date();
+            document.getElementById("last-update").textContent =
+            now.getHours().toString().padStart(2, "0") + ":" +
+            now.getMinutes.toString().padStart(2, "0") + ":" +
+            now.getSeconds().toString().padStart(2, "0");
+        }
+
+        function updateTemperatureDisplay(zone, temperature) {
+            const tempElement = document.getElementById(`${zone}-temp`);
+            const progressElement = document.getElementById(`${zone}-progress`);
+
+            // Update temperature display
+            tempElement.textContent = `${temperature.toFixed(1)}°C`;
+
+            // Update progress bar (simplified - in reality would use target temperature)
+            const target = getTargetForZone(zone);
+            const percentage = Math.min(100, Math.max(0, ((temperature - getMinForZone(zone)) / (getMaxForZone(zone) - getMinForZone())) * 100));
+
+            progressElement.style.width = `${percentage}%`;
+
+            // Update status if needed
+            updateZoneStatus(zone, temperature, target);
+        }
+
+        function getTargetForZone(zone) {
+            const targets = {
+                "grill": 200,
+                "fryer": 175,
+                "freezer": -18,
+                "assembly": 20
+            };
+            return targets[zone];
+        }
+
+        function getMinForZone(zone) {
+            const mins = {
+                "grill": 150,
+                "fryer": 160,
+                "freezer": -25,
+                "assembly": 15
+            };
+            return mins[zone];
+        }
+
+        function getMaxForZone(zone) {
+            const maxs = {
+                "grill": 250,
+                "fryer": 190,
+                "freezer": -10,
+                "assembly": 30
+            };
+            return maxs[zone]
+        }
+
+        function updateZoneStatus(zone, currentTemp, targetTemp) {
+            const statusElement = document.getElementById(`${zone}-status`);
+            const diff = Math.abs(currentTemp - targetTemp);
+
+            if (diff < 5) {
+                statusElement.textContent = "Normal";
+                statusElement.className = "card-badge normal";
+            } else if (diff < 10) {
+                statusElement.textContent = "Varning";
+                statusElement.className = "card-badge warning";
+                showAlert(`${getZoneName(zone)}: Temperaturavvikelse ${diff.toFixed(1)}`, "warning");
+            } else {
+                statusElement.textContent = "Kritisk";
+                statusElement.className = "card-badge critical";
+                showAlert(`${getZoneName(zone)}: KRITISK temperaturavvikelse ${diff.toFixed(1)}`, "error")
+            }
+        }
+
+        function updateSystemStatus() {
+            // Check all zones and update overall system status
+            // This is a simplified varesion
+            console.log("Updating system status...");
+        }
+
+        function refreshAllData() {
+            refreshTemperatureData();
+            loadTemperatureLogs(currentPage);
+            showAlert("All data uppdaterad", success)
+        }
+
+        // UI Helper functions
+        function showAlert(message, type = "info") {
+            const alertContainer = document.getElementById("alert-container")
+            const alertId = "alert-" + Date.now();
+
+            const alert = document.createElement("div");
+            alert.className = `alert alert-${type}`;
+            alert.id = alertId;
+            alert.innerHTML = `
+            <span>${message}</span>
+            <button class="close-alert" onclick="document.getElementById('${alertId}').remove()">&times;</button>
+            `;
+
+            alertContainer.appendChild(alert);
+
+            // Auto-remove after secounds
+            setTimeout(() => {
+                if (document.getElementById(alertId)) {
+                    document.getElementById(alertId).remove();
+                }
+            }, 5000);
+        }
+
+        function showSystemDiagnodtics() {
+            // Populate diagnostics info
+            const sensorStatus = document.getElementById("sensor-status-list");
+            sensorStatus.innerHTML = `
+            <div class="status-item">
+                <span class="status-dot online></span>
+                <span>Grill-sensor: Online</span>
+            </div>
+            <div class="status-item">
+                <span class="status-dot online></span>
+                <span>Fritös-sensor: Online</span>
+            </div>
+            <div class="status-item">
+                <span class="status-dot online"></span>
+                <span>Frysfack-sensor: Online</span>
+            </div>
+            <div class="status-item>
+                <span class="status-dot warning</span>
+                <span>Sammanställnings-sensor: Latens varning</span>
+            </div>
+            `;
+
+            const metrics = document.getElementById("performance-metrics");
+            metrics.innerHTML = `
+            <div class="metric-item">
+                <span>Genomsnittlig uppdateringshastighet:</span>
+                <span class="metric-value">47 ms</span>
+            </div>
+            <div class="metric-item">
+                <span>Sensorfel senaste 24h:</span>
+                <span class="metric-value">2</span> 
+            </div>
+            <div class="metric-item">
+                <span>System uppetid:</span>
+                <span class="matric-value">99.7%</span>
+            </div>
+            `;
+
+            document.getElementById("diagnostics-modal").style.display = "black";
+        }
+
+        function runFullDiagnostitcs() {
+            showAlert("Full systemdiagnostik pågår...", "info");
+            setTimeout(() => {
+                showAlert("Diagnostik slutförd. Inga kritiska fel hittades.", "success");
+            }, 3000);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        // Cleanup on page unload
+        window.addEventListener("beforeunload", function() {
+            if (autoUpdateInterval) {
+                clearInterval(autoUpdateInterval);
+            }
+        });
+
+
+      </script>
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamburgarmaskin - Inventeringsstatuus</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/style.css") }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+         <header class="header">
+            <div class="header-left">
+                <h1><i class="fas fa-hamburger"></i> Hamburgarmaskin Inventering</h1>
+            </div>
+            <div class="header-right">
+                <nav class="nav-menu">
+                    <a href="/" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="/temperature" class="nav-link"><i class="fas fa-thermometer-half"></i> Temperatur</a>
+                    <a href="/orders" class="nav-link"><i class="fas fa-receipt"></i> Order</a>
+                    <a href="/inventory" class="nav-link active"><i class="fas fa-boxes"></i> Inventering</a>
+                </nav>
+                <div class="system-status">
+                    <span class="status-inicator active"></span>
+                    <span id="systemTime">--:--:--</span>
+                </div>
+            </div>
+         </header>
+
+         <!-- Main Content -->
+          <main class="main-content">
+            <!-- Inventory Overview Cards -->
+             <div class="overview-section">
+                <h2><i class="fas fa-clipboard-list"></i> Inventeringsöversikt</h2>
+                <div class="overview-card total-items">
+                    <div class="card-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Ingredienser</h3>
+                        <p id="totalItems" class="card-number">--</p>
+                    </div>
+                </div>
+                <div class="overview-card low-stock">
+                    <div class="card-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Lågt Lager</h3>
+                        <p id="lowStockCount" class="card-number">-</p>
+                    </div>
+                </div>
+                <div class="overview-card out-of-stock">
+                    <div class="card-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Slut i Lager</h3>
+                        <p id="outOfStockCount" class="card-number">-</p>
+                    </div>
+                </div>
+                <div class="overview-card reorder-needed">
+                    <div class="card-icon">
+                        <i class="fas fa-truck-loading"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Beställning Behövs</h3>
+                        <p id="reorderNeeded" class="card-number">-</p>
+                    </div>
+                </div>
+             </div>
+
+             <!-- Inventory Controls -->
+              <div class="controls-section">
+                <h2><i class="fas fa-sliders-h"></i> Inventeringskontroller</h2>
+                <div class="controls-grid">
+                    <button class="btn btn-primary" onclick="refreshInventory()">
+                        <i class="fas fa-sync-alt"></i> Uppdatera Inventering
+                    </button>
+                    <button class="btn btn-secondary" onclick="openManualUpdateModal()">
+                        <i class="fas fa-edit"></i> Manuell Uppdatering
+                    </button>
+                    <button class="btn btn-info" onclick="generateInventoryReport()">
+                        <i class="fas fa-file-export"></i> Generera Rapport
+                    </button>
+                    <button class="btn btn-warning" onclick="openReorderModal()">
+                        <i class="fas fa-shopping-cart"></i> Beställ Ingredienser
+                    </button>
+                </div>
+              </div>
+
+              <!-- Inventory Categories -->
+               <div class="inventory-categories">
+                <!-- Kött & Proteiner -->
+                 <div class="category-section">
+                    <h3 class="category-title">
+                        <i class="fas fa-drumstick-bite"></i> Kött & Proteiner
+                    </h3>
+                    <div class="inventory-table-container">
+                        <table class="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Ingrediens</th>
+                                    <th>Lagersaldo</th>
+                                    <th>Minimum</th>
+                                    <th>Maximum</th>
+                                    <th>Status</th>
+                                    <th>Senast Uppdaterad</th>
+                                    <th>Åtgärder</th>
+                                </tr>
+                            </thead>
+                            <tbody id="meatInventory">
+                                <!-- Fylls med JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                 </div>
+
+                 <!-- Bröd & Tillbehör -->
+                  <div class="category-section">
+                    <h3 class="category-title">
+                        <i class="fas fa-bread-slce"></i> Bröd & Tillbehör
+                    </h3>
+                    <div class="inventory-table-container">
+                        <table class="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Ingrediens</th>
+                                    <th>Lagersaldo</th>
+                                    <th>Minimum</th>
+                                    <th>Maximum</th>
+                                    <th>Status</th>
+                                    <th>Senast Uppdaterad</th>
+                                    <th>Åtgärder</th>
+                                </tr>
+                            </thead>
+                            <tbody id="breadInventory">
+                                <!-- Fylls med JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+
+                  <!-- Grönsaker & Såser -->
+                   <div class="category-section">
+                    <h3 class="category-title">
+                        <i class="fas fa-leaf"></i> Grönsaker & Såser
+                    </h3>
+                    <div class="inventory-table-container">
+                        <table class="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Ingrediens</th>
+                                    <th>Lagersaldo</th>
+                                    <th>Minimum</th>
+                                    <th>Maximum</th>
+                                    <th>Status</th>
+                                    <th>Temperatur</th>
+                                    <th>Åtgärder</th>
+                                </tr>
+                            </thead>
+                            <tbody id="veggiesInventory">
+                                <!-- Fylls med JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                   </div>
+
+                   <!-- Drycker & Tillbehör -->
+                    <div class="category-section">
+                    <h3 class="category-title">
+                        <i class="fas fa-wine-bottle"></i> Drycker & Tillbehör
+                    </h3>
+                    <div class="inventory-table-container">
+                        <table class="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Ingrediens</th>
+                                    <th>Lagersaldo</th>
+                                    <th>Minimum</th>
+                                    <th>Maximum</th>
+                                    <th>Status</th>
+                                    <th>Förpackning</th>
+                                    <th>Åtgärder</th>
+                                </tr>
+                            </thead>
+                            <tbody id="drinksInventory">
+                                <!-- Fylls med JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+               </div>
+
+               <!-- Inventory Charts -->
+                <div class="chrts-section">
+                    <h2><i class="fas fa-chart-bar"></i> Inventeringsstatisk</h2>
+                    <div class="charts-grid">
+                        <div class="chart-container">
+                            <canvas id="inventoryLevelsChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="stockStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reorder Suggestions -->
+                 <div class="suggestions-section">
+                    <h2><i class="fas fa-lightbulb"></i> Beställningsförslag</h2>
+                    <div class="suggestions-list" id="reorederSuggestions">
+                        <!-- Fylls med JavaScript -->
+                    </div>
+                 </div>
+          </main>
+
+          <!-- Footer -->
+           <footer class="footer">
+            <div class="footer-left">
+                <p>Hamburgarmaskin System v1.0</p>
+            </div>
+            <div class="footer-right">
+                <p>Senast uppdaterad: <span id="lastUpdated">--:--:--</span></p>
+            </div>
+           </footer>
+    </div>
+
+    <!-- Models -->
+    <!-- Manual Update Modal -->
+    <div id="manualUpdateModal" class="modal">
+        <div class="modal-content">
+            <div class="header">
+                <h3><i class="fas fa-edit"></i> Manuell Inventeringsuppdatering</h3>
+                <button class="close-btn" onclick="closeModal('manualUpdateModul')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="manualUpdateForm">
+                <div class="form-group">
+                    <label for="ingredientSelect">Ingrediens:</label>
+                    <select id="ingredientSelect" class="form-control" required>
+                        <option value="">Välj ingresiens...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="currentStock">Nuvarande Lager:</label>
+                    <input type="number" id="currentStock" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="newStock">Nytt Lagersaldo:</label>
+                    <input type="number" id="newStock" class="form-control" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="updateReason">Anledning till uppdatering:</label>
+                    <select id="updateReason" class="form-control" required> 
+                        <option value="">Välj anledning...</option>
+                        <option value="restock">Påfyllning</option>
+                        <option value="waste">Spill/skrot</option>
+                        <option value="correction">Korrigering</option>
+                        <option value="maintenance">Underhåll</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="updateNotes">Anteckningar:</label>
+                    <textarea id="updateNotes" class="form-control" rows="3"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('manualUpdateModal')">Avbryt</button>
+            <button class="btn btn-primary" onclick="submitManualUpdate()">Spara Ändringar</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Reorder Modal -->
+     <div id="reorderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-shopping-cart"></i> Beställ Ingredienser</h3>
+                <button class="close-btn" onclick="closeModal('reorderModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="reorder-list" id="reorderList">
+                    <!-- Fylls med JavaScript -->
+                </div>
+                <div class="form-group">
+                    <label for="supplierSelect">Leverantör:</label>
+                    <select id="supplierSelect" class="form-control">
+                        <option value="supplier1">Kött & Co</option>
+                        <option value="supplier2">Brödbolaget</option>
+                        <option value="supplier3">Grönsaksgrossisten</option>
+                        <option value="supplier4">Dryckescentralen</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="deliveryDate">Önskat Leveransdatum</label>
+                    <input type="date" id="deliveryDate" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="orderNotes">Beställningsanteckningar:</label>
+                    <textarea id="orderNotes" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="order-summary">
+                    <p>Total antal ingredienser: <span id="totalReorderItems">0</span></p>
+                    <p>Beräknat pris: <span id="estimatedPrice">- SEK</span></p>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal('reorderModal')">Avbryt</button>
+                    <button class="btn btn-success" onclick="submitReorder()">Skicka Beställning</button>
+                </div>
+            </div>
+        </div>
+     </div>
+
+     <!-- Loading Overlay -->
+      <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Uppdaterar inventering...</p>
+      </div>
+
+      <!-- Script -->
+       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+       <script src="{{ url_for("static", filename="js/dashboard.js") }}"></script>
+       <script>
+        // Initialize when page Loads
+        document.addEventListener("DOMContentLoaded", function() {
+            updateSystemTime();
+            setInterval(updateSystemTime, 1000);
+            loadInventoryDate();
+            setInterval(loadInventoryDate, 30000) // Uppdatera var 30:e sekund
+        });
+
+        function updateSystemTime() {
+            const now = Date();
+            document.getElementById("systemTime").textContent = 
+            now.toLocaleTimeString("sv-SE");
+        }
+
+        function loadInventoryDate() {
+            showLoading();
+
+            // Simulera API-anrop
+            setTimeout(() => {
+                // Uppdatera översiktskort
+                document.getElementById("totalItems").textContent = "42";
+                document.getElementById("lowStockCount").textContent = "5";
+                document.getElementById("outOfStockCount").textContent = "2";
+                document.getElementById("reorderNeeded").textContent = "7";
+
+                // Uppdatera inventeringstabeller
+                updateInventoryTables();
+
+                // Uppdatera diagram
+                updateCharts();
+
+                // Uppdatera beställningsförslag
+                updateReorderSuggestions();
+
+                // Uppdatera sensar uppfaterad tid
+                document.getElementById("lastUpdated").textContent = 
+                new Date().toLocaleTimeString("sv-SE");
+
+                hideLoading();
+            }, 500)
+        }
+
+        function updateInventoryTables() {
+            // Exempeldate för köttinventering
+            const metaData = [
+                { name: "Hamburgare 150g", stock: 45, min: 20, max: 100, status: "good", lastUpdated: "10:30" },
+                { name: "Kycklingfile", stock: 12, min: 15, max: 50, status: "low", lastUpdated: "11:15" },
+                { name: "Vegetariskt", stock: 0, min: 10, max: 30, status: "out", lastUpdated: "09:45" },
+                { name: "Bacon", stock: 25, min: 10, max: 40, status: "good", lastUpdated: "10:00 "}
+            ];
+
+            updateTable("meatInventory", metaData);
+
+            // Ytterligare tabeller skulle uppdateras här...
+        }
+
+        function updateTable(tableId, data) {
+            const tableBody = document.getElementById(tableId);
+            tableBody.innerHTML = "";
+
+            date.forEach(item => {
+                const row = document.createElement("tr");
+
+                // Status klass
+                let statusClass = "";
+                let statusText = "";
+                let statusIcon = "";
+
+                if (item.status === "good") {
+                    statusClass = "status-good";
+                    statusText = "Tillräckligt";
+                    statusIcon = "<i class='fas fa-check-circle'></i>";
+                } else if (item.status === "low") {
+                    statusClass = "status-warning";
+                    statusText = "Lågt lager";
+                    statusIcon = "<i class='fas fa-exclamation-triangle'></i>";
+                } else {
+                    statusClass = "status-danger"; 
+                    statusText = "Slut";
+                    statusIcon = "<i class='fas fa-times-cercle'></i>";
+                }
+
+                row.innerHTML = `
+                <td>${item.name}</td>
+                <td>${item.stock}</td>
+                <td>${item.min}</td>
+                <td>${item.max}</td>
+                <td class="${statusClass}">${statusIcon} ${statusText}</td>
+                <td>${item.lastUpdated}</td>
+                <td>
+                    <button class="btn-icon" onclick="openDetailView("${item.name}")" title="Detaljer">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                    <button class="btn-icon" onclick="openRestockModal("${item.name}") title="Påfyll>
+                        <i class="fas fa-box-open></i>
+                    </button>
+                    <button class="btn-icon" onclick="adjustStock('${item.name}') title="Justera">
+                        <i class="fas fa-slider-h"></i>
+                    </button>
+                </td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        function updateCharts() {
+            // Inventory levels Chart
+            const ctx1 = document.getElementById("inventoryLevelsChart").getContext("2d");
+            new Chart(ctx1, {
+                type: "bar",
+                data: {
+                    labels: ["Kött", "Bröd", "Grönsaker", "Såser", "Ost", "Tillbehör"],
+                    datasets: [{
+                        label: "Lagersaldo",
+                        data: [45, 120, 85, 60, 75, 90],
+                        backgroundColor: "rgba(54, 162, 235, 0.7)"
+                    }]
+                },
+                options: {
+                    reponsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Lagersaldo per kategori"
+                        }
+                    }
+                }
+            });
+
+            // Stock Status Chart
+            const ctx2 = document.getElementById("stockStatusChart").getContext("2d");
+            new Chart(ctx2, {
+                type: "pie",
+                data: {
+                    labels: ["Tillräckligt", "Lågt lager", "Slut"],
+                    datasets: [{
+                        data: [28, 5, 2],
+                        backgroundColor: [
+                            "rgba(75, 192, 192, 0.7)",
+                            "rgba(255, 205, 86, 0.7)",
+                            "rgba(255, 99, 132, 0.7)"
+                        ]
+                    }]
+                },
+                options: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Lagerstatusöversikt"
+                    }
+                }
+            }) ;
+        }
+
+    function updateReorderSuggestions() {
+        const suggestions = [
+            { item: "Kycklingfile", current: 12, recommanded: 30, priority: "high" },
+            { item: "Vegetariskt", current: 0, recommanded: 15, priority: "high" },
+            { item: "Sallad", current: 8, recommanded: 25, priority: "medium" },
+            { item: "Tomat", current: 15, recommanded: 30, priority: "medium" },
+            { item: "Cheddarost", current: 20, recommanded: 40, priority: "low"}
+        ];
+
+        const container = document.getElementById("reorderSuggestions");
+        container.innerHTML = "";
+        suggestions.forEach(suggestion => {
+            const suggestionEl = document.createElement("div");
+            suggestionEl.className = `suggestion-item priority-${suggestion.priority}`;
+            suggestionEl.innerHTML = `
+            <div class="suggestion-content">
+                <h4>${suggestion.item}</h4>
+                <p>Nuvarande: ${suggestion.current} st | Rekommenderat: ${suggestion.recommanded} st</p>
+            </div>
+            <button class="btn btn-sm" onclick="addToReorder('${suggestion.item}', ${suggestion.recommanded})>
+                Lägg till i beställning
+            </button>
+            `;
+            container.appendChild(suggestionEl);
+        });
+    }
+
+    function refreshInventory() {
+        showLoading();
+        toastr.info("Uppdatera inventering...");
+
+        setTimeout(() => {
+            loadInventoryDate();
+            toastr.success("Inventering uppdaterad!");
+        }, 1500);
+    }
+
+    function openManualUpdateModal() {
+        // Fyll dropdown med ingredienser
+        const select = document.getElementById("ingredientSelect");
+        select.innerHTML = `
+        <option value="">Välj ingrediens...</option>
+        <option value="hamburger">Hamburgare 150g</option>
+        <option value="chicken">Kyclingfile</option>
+        <option value="bun">Bröd</option>
+        <option value="lettuce">Sallad</option>
+        <option value="tomato">Tomat</option>
+        <option value="cheese">Ost</option>
+        <option value="sauce">Special sås</option>
+        `;
+
+        document.getElementById("manualUpdateModal").style.display = "black";
+    }
+
+    function submitManualUpdate() {
+        const form = document.getElementById("ingredientSelect").value;
+        if (!form.checkValidity()) {
+            toastr.warning("Fyll i alla obligatoriska fält");
+            return;
+        }
+
+        const ingredient = document.getElementById("ingredientSelect").value;
+        const newStock = document.getElementById("newStock").value;
+        const reason = document.getElementById("updateReason").value;
+
+        // Simulera API-anrop
+        showLoading();
+        setTimeout(() => {
+            toastr.success(`Laget uppdaterat för ${ingredient}`);
+            closeModal("manualUpdateModal");
+            loadInventoryDate();
+        }, 1000);
+    }
+
+    function openReorderModal() {
+        document.getElementById("reorderModal").style.display = "black";
+    }
+
+    function addToReorder(item, quantity) {
+        toolbar.success(`${item} tillagd i beställningslista`);
+    }
+
+    function submitReorder() {
+        const supplier = document.getElementById("supplierSelect").value;
+        const deliveryDate = document.getElementById("deliveryDate").value;
+
+        showLoading();
+        setTimeout(() => {
+            toastr.success("Beställning skickad till leverantör!");
+            closeModal("readerModal");
+        }, 1500);
+    }
+
+    function generateInventoryReport() {
+        showLoading();
+        toastr.info("Genererar rapport...");
+
+        setTimeout(() => {
+            // Simulera rapportering
+            const reportData = {
+                timestamp: new Date().toISOString(),
+                totalItem: 42,
+                lowStock: 5,
+                outOfStock: 2,
+                estimatedValue: "15,250 SEK"
+            };
+
+            // Skapa nedladdningslänk (i verklig upp skulle detta generera en fil)
+            toastr.success("Rapport klar!");
+
+            // Visa nedladdningsalternativ
+            alert(`Rapport genererad:\n\n` +
+            `Tidpunkt: ${new Date().toLocaleString("sv-SE")}\n` +
+            `Totala ingredienser: ${reportData.totalItem}\n` +
+            `Lågt lager: ${reportData.lowStock}\n` +
+            `Slut i lager: ${reportData.outOfStock}\n` +
+            `Uppskattat värde: ${reportData.estimatedValue}`);
+        }, 2000);
+    }
+
+    function openDetailView(itemName) {
+        alert(`Detaljer för: ${itemName}\n\nHistoria och statistik kommer här...`);
+    }
+
+    function openRestockModal(itemName) {
+        alert(`Påfyllningsmodal för: ${itemName}`);
+    }
+
+    function adjustStock(itemName) {
+        alert(`Justera lager för: ${itemName}`);
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
+
+    function showLoading() {
+        document.getElementById("loadingOverlay").style.display = "flex";
+    }
+
+    function hideLoading() {
+        document.getElementById("loadingOverlay").style.display = "none";
+    }
+
+    // Stäng modal vid klick utanför
+    window.onclick = function(event) {
+        const modals = document.getElementsByClassName("modal");
+        for (let modal of modals) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
+    </script>
+</body>
+</html>

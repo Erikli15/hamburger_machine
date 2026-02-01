@@ -542,3 +542,4 @@ if __name__ == "__main__":
     print(f"QR-kod: {"Ja" if respnse.qr_code else "Nej"}")
 
     gateway.cleanup()
+    

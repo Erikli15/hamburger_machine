@@ -1,0 +1,142 @@
+2026-02-13 08:15:32,234 - INFO - System.startup - Hamburger Machine v2.1.0 strarting up
+2026-02-13 08:15:32,345 - INFO - System.startup - OS: Raspberry Pi OS 11 (bullseye) - Kernel: 5.10.103-v7l+
+2026-02-13 08:15:32,456 - INFO - System.startup - Python version: 3.9.2
+2026-02-13 08:15:32,567 - INFO - ConfigLoader.load_config - Configuration loaded from config.yaml
+2026-02-13 08:15:32,678 - INFO - Datebase.init - Datebase connection established (SQLite v3.34.1)
+2026-02-13 08:15:32,789 - INFO - Datebase.init - Running schema version check: current v2.1.0
+
+2026-02-13 08:15:33,012 - INFO - Hardware.init - Initializing hardware components...
+2026-02-13 08:15:33,123 - INFO - Hardware.init - Temperature.sensor_manager - Initializing 8 temperature sensors (I2C bus 1)
+2026-02-13 08:15:33,234 - INFO - Temperature.sensor_manager - Sensor 0x48 (fritös 1): 21.3°C
+2026-02-13 08:15:33,245 - INFO - Temperature.sensor_manager - Sensor 0x49 (fritös 2): 21.1°C
+2026-02-13 08:15:33,256 - INFO - Temperature.sensor_manager - Sensor 0x4A (grill 1): 21.4°C
+2026-02-13 08:15:33,267 - INFO - Temperature.sensor_manager - Sensor 0x4B (grill 2): 21.2°C
+2026-02-13 08:15:33,278 - INFO - Temperature.sensor_manager - Sensor 0x4C (frys 1): -18.2°C
+2026-02-13 08:15:33,289 - INFO - Temperature.sensor_manager - Sensor 0x4D (frys 2): -18.1°C
+2026-02-13 08:15:33,300 - INFO - Temperature.sensor_manager - Sensor 0x4E (kyl 1): 3.5°C
+2026-02-13 08:15:33,311 - INFO - Temperature.sensor_manager - Sensor 0x4F (kyl 2): 3.4 °C
+
+2026-02-13 08:15:34,123 - INFO - Actuators.robotic_arm - Initializing UR5 robotic arm (serial: UR5-2026-001)
+2026-02-13 08:15:34,234 - INFO - Actuators.robotic_arm - Calibration succssful - Joint positions: [0.0, -90.0, 0.0, -90.0, 0.0, 0.0]
+2026-02-13 08:15:34,597 - INFO - Actuators.conveyor - conveyor belt controller initialized (PWM: GPIO 18, Dir: GPIO 23)
+2026-02-13 08:15:34,678 - INFO - Actuators.dispenser - 12 dispensers initialized (I2C addresses 0x20-0x2B)
+
+2026-02-13 08:15:35,123 - INFO - Payment.init - Card reader initialized (IDTech VP3300, firmware v4.12)
+2026-02-13 08:15:35,234 - INFO - Payment.init - Payment geteway connection established to Stripe API
+
+2026-02-13 08:15:36,456 - INFO - Sensors.inventory - Scanning inventory sensors...
+2026-02-13 08:15:36,567 - INFO - Sensors.inventory - Bröd (vitt): 48/50 st
+2026-02-13 08:15:36,568 - INFO - Sensors.inventory - Bröd (fullkorn): 32/30 st
+2026-02-13 08:15:36,569 - INFO - Sensors.inventory - Kött (nöt): 2.4/3.0 kg
+2025-02-13 08:15:36,570 - INFO - Sensors.inventory - Kött (kyckling): 2.8/3.0 kg
+2026-02-13 08:15:36,571 - INFO - Sensors.inventory - Sallad: 1.2/2.0 kg
+2026-02-13 08:15:36,572 - INFO - Sensors.inventory - Tomat: 0.9/1.5 kg
+2026-02-13 08:15:36,573 - INFO - Sensors.inventory - Lök: 1.8/2.0 kg
+2026-02-13 08:15:36,574 - INFO - Sensors.inventory - Ost: 2.1/2.5 kg
+2026-02-13 08:15:36,575 - INFO - Sensors.inventory - Bacon: 1.4/2.0 kg
+
+2026-02-13 08:15:37,123 - INFO - System.startup - All hardware components initialized succssfully
+2026-02-13 08:15:37,234 - INFO - Controller.start - Starting main controlloop
+2026-02-13 08:15:37,345 - INFO - WebApp.start - Starting web interface on port 5000
+2026-02-13 08:15:37,456 - INFO - AdminPanel.start - Local admin panel available (Tikner)
+2026-02-13 08:15:37,567 - INFO - System.ready - System ready orders. Uptime: 0:00:05
+
+2026-02-13 08:15:40,123 - WARNING - Temperature.fritös_controller - Fritös 1 temperature 21.3°C below operating temp (target: 175°C) - Starting preheat
+2026-02-13 08:15:40,234 - WARNING - Temperature.fritös_controller Fritös 2 temperature 21.1°C below operating temp (target: 175°C) - Starting preheat
+2026-02-13 08:15:40,345 - WARNING - Temperature.grill_controller - Grill 1 temperature 21.4°C below operating temp (target: 200°C) - Starting preheat
+2026-02-13 08:15:40,456 - WARNING - Temperature.grill_controller - Grill 2 temperature 21.2°C below operating temp (target: 200°C) - Starting preheat
+
+2026-02-13 08:16:00,123 - INFO - Temperature.fritös_controller - Fritös 1: 45.2°C (rising 12°C/min)
+2026-02-13 08:16:00,234 - INFO - Temperature.fritös_controller - Fritös 2: 44.8°C (rising 11.9°C/min)
+2026-02-13 08:16:00,345 - INFO - Temperature.grill_controller - Grill 1: 52.1°C (rising 15.4°C/min)
+2026-02-13 08:16:00,456 - INFO - Temperature.grill_controller - Grill 2: 51.9°C (rising 15.3°C/min)
+
+2026-02-13 08:16:45,678 - INFO - Temperature.fritös_controller - Fritös 1 reached target temperature 175°C (actual: 175,3°C)
+2026-02-13 08:16:46,123 - INFO - Temperature.fritös_controller - Fritös 2 reached target temperature 175°C (actual: 174,8°C)
+2026-02-13 08:16:46,567 - INFO - Temperature.grill_controller - Grill 1 reached target temperature 200°C (actual: 199,7°C)
+2026-02-13 08:16:47,012 - INFO - Temperature.grill_controller - Grill 2 reached target temperature 200°C (actual: 200,3°C)
+
+2026-02-13 08:17:23,456 - INFO - Order.received - New order received: ORD-20260213-001
+2026-02-13 08:17:23,457 - INFO - Order.details - Customer: Walk-in
+2026-02-13 08:17:23,458 - INFO - Order.details - Items: 1x Classic Burger, 1x Fries (medium), 1x Soda (Coca-Cola)
+2026-02-13 08:17:23,459 - INFO - Order.total - Total: 129.00 SEK
+2026-02-13 08:17:23,460 - INFO - Payment.proccessed - Payment successful: Card (VISA ****4242) - Transaction ID: ch_3MlLqV2eZvKYlo2C0XjKj9Zz
+
+2026-02-13 08:17:23.789 - INFO - Order.queue - Order ORD-20260213-001 added to queue (position 1)
+2026-02-13 08:17:23,890 - INFO - Order.proccessoing - Starting.preparation of ORD-20260213-001
+
+2026-02-13 08:17:23,123 - INFO - Actuators.dispensers - Dispensing 200g beef patty (position 3)
+2026-02-13 08:17:24,234 - INFO - Actuators.conveyor - Conveyor moving patty to grill station (speed: 0.2 m/s)
+2026-02-13 08:17:26,345 - INFO - Actuators.robotic_arm - Gripping patty at pickup station 
+2026-02-13 08:17:26,890 - INFO - Actuators.robotic_arm - Placing patty on grill 1
+2026-02-13 08:17:27,123 - INFO - Recipe.burger - Cooking patty on grill 1 for 180 seconds
+
+2026-02-13 08:17:28,456 - INFO - Actuators.dispenser - Dispensing 80g fries (position 7)
+2026-02-13 08:17:28,567 - INFO - Actuators.conveyor - Conveyor moving fries to fries to frying station
+2026-02-13 08:17:30,678 - INFO - Actuators.robotic_arm - Lowering fry basket into fritös 1
+2026-02-13 08:17:31,123 - INFO - Recipe.fries - Frying fries for 210 seconds
+
+2026-02-13 08:17:35,123 - INFO - Sensors.inventory - Bun dispenser activated (position 1)
+2026-02-13 08:17:35,890 - INFO - Actuators.conveyor - Bun moving to assembly station
+
+2026-02-13 08:18:00,123 - INFO - Temperature.monitor - All cooking temperatures stable
+2026-02-13 08:18:00,234 - INFO - Safety.monitor - All safety sensors OK
+
+2026-02-13 08:20:21,123 - INFO - Recipe.burger - Patty cooking complete - Internal temperature: 71.2°C (safe)
+2026-02-13 08:20:21,234 - INFO - Actuators.robotic_arm - Removing patty from grill 1
+2026-02-13 08:20:22,001 - INFO - Recipe.fries - Frying complete - Golden brown, temperature: 68,5°C
+
+2026-02-13 08:20:30,123 - INFO - Assembly.start - Starting burger assembly
+2026-03-13 08:20:30,234 - INFO - Assembly.step - Adding bottom bun
+2026-02-13 08:20:30,345 - INFO - Assembly.step - Adding patty
+2026-02-13 08:20:30,456 - INFO - Assembly.step - Adding cheese (melting: 15s)
+2026-02-13 08:20:30,567 - INFO - Assembly.step - Adding lettuuce (15g)
+2026-02-13 08:20:30,678 - INFO - Assembly.step - Adding tomato (2 slices)
+2026-02-13 08:20:30,789 - INFO - Assembly.step - Adding souce (burger sauce, 20ml)
+2026-02-13 08:20:30,890 - INFO - Assembly.step - Adding top bun
+2026-02-13 08:20:31,123 - INFO - Assembly.complete - Burger assembly complete
+
+2026-02-13 08:20:45,678 - INFO - Order.complete - Order ORD-20260213-001 complete
+2026-02-13 08:20:45,789 - INFO - Order.complete - Preparation time: 3 minutes 22 seconds
+2026-02-13 08:20:45,890 - INFO - Order.notification - Customer notified: Please pick up your order
+
+2026-02-13 08:21:00,123 - INFO - Sensor.inventory - Updating inventory after order
+2026-02-13 08:21:00,234 - INFO - Sensor.inventory - Bröd (vitt): 47/50 st (-1)
+2026-02-13 08:21:00,235 - INFO - Sensor.inventory - Kött (nöt): 2.2/3.0 kg (-0.2 kg)
+2026-02-13 08:21:00,236 - INFO - Sensor.inventory - Sallad: 1.185/2.0 kg (-0.015 kg)
+2026-02-13 08:21:00,237 - INFO - Sensor.inventory - Tomat: 0.895/1.5 kg (-0.005 kg)
+2026-02-13 08:21:00,238 - INFO - Sensor.inventory - Ost: 2.085/2,5 kg (-0.015 kg)
+
+2026-02-13 08:21:05,678 - INFO - Temperature.monitor - Fritös 1: 174.8°C, Fritös 2: 175.1°C, Grill 1: 199.6°C, Grill 2: 200.2°C
+
+2026-02-13 08:22:15,456 - INFO - Order.reached - New order received: ORD-20260213-002
+2026-02-13 08:22:15,457 - INFO - Order.details - Customer: Mobile app (User: john.doe@email.com)
+2026-02-13 08:22:15,458 - INFO - Order.details - Items: 1x Double Cheese Burger, 1x Onion Rings, 1x Milkshake (Chocolate)
+2026-02-13 08:22:15,459 - INFO - Order.total - Total: 189.00 SEK
+2026-02-13 08:22:15,460 - INFO - Payment.proccessed - Payment successful: Swish - Transaction ID: swish_20260213_001
+
+2026-02-13 08:22:16,123 - INFO - Order.queue - Order ORD-20260213-002 added to queue (position 1)
+
+[Additional orders would continue here...]
+
+2026-02-13 10:45:12,345 - WARNING - Sensors.inventory - Low inventory warning: Tomat below 20% (0.3/1.5 kg remaining)
+2026-02-13 10:45:12,346 - WARNING - Sensors.inventory - Low inventory warning: Lök below 20% (0.35/2.0 kg remaining)
+
+2026-02-13 12:30:00,123 - INFO - Maintenance.check - Running scheduled self-diagnostic
+2026-02-13 12:30:00,234 - INFO - Maintenance.check - All sensors responding currectly
+2026-02-13 12:30:00,345 - INFO - Maintenance.check Actuator tesst passed
+2026-02-13 12:30:00,456 - INFO - Maintenance.check - Temperature controller stable
+2026-02-13 12:33:00,567 - INFO - Maintenance.check - No error conditions detected
+
+2026-02-13 15:20:45,678 - ERROR - Sensors.inventory_sensor - Sensor 0x28 (tomato dispenser) communication timeout
+2026-02-13 15:20:45,679 - WARNING - Safety_monitor - Attempting automatic reset of sensor 0x28
+2026-02-13 15:20:46,123 - INFO - Sensors.inventory_sensor - Sensor 0x28 reconnected succssfully
+
+2026-02-13 17:45:30,123 - INFO - System.shutdown - Reccived shutdown command from admin panel
+2026-02-13 17:45:30,234 - INFO - Temperature.controllers - Starting cooldown cycle for fritös and grill
+2026-02-13 17:45:31,456 - INFO - System.shutdown - Saving system state
+2026-02-13 17:45:31,567 - INFO - Datebase.buckup - Creating daily buckup
+2026-02-13 17:45:32,678 - INFO - Datebase.buckup - Backup saved to /home/pi/hamburger_machine/buckups/2026-02-13.db
+2026-02-13 17:45:33,123 - INFO - System.shutdown - Closing all connections
+2026-02-13 17:45:33,234 - INFO - System.shutdown - System shutdown complete
+2026-02-13 17:45:33,235 - INFO - System.shutdown - Uptime: 9 hours 30 minutes

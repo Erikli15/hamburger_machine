@@ -1,0 +1,40 @@
+# Hamburger Machine Ordr History Log
+# Format: TIMESTAMP | ORDER_ID | ITEMS | TOTAL_PRICE | BETALNINGSMETOD | STATUS | TID_ATT_PREPARERA (s)
+# Skapad: 2026-02-15
+
+2026-02-15 08:23:45 | ORD-001 | 2x Cheeseburgare, 1x Pommes Frites | 189.50 | Kortbetalning | SLUTFÖTD | 187
+2026-02-15 08:27:12 | ORD-002 | 1x Vegoburgare, 1x Milkshake | 145.00 | Swish | SLUTFÖRD | 203
+2026-02-15 08:31:33 | ORD-003 | 3x Hamburgare, 3x Pommes Frites | 345.00 | Kontant | SLUTFÖRD | 245
+2026-02-15 08:38:21 | ORD-004 | 1x Backonburgare, 1x Cola | 119.50 | Kortbetalning | SLUTFÖRD | 156
+2026-02-15 08:42:56 | ORD-005 | 4x Chicken Nuggets (barnmeny) | 298.00 | Kortbetalning | SLUTFÖRD | 278
+2026-02-15 08:48:09 | ORD-006 | 2x Dubbelburgare, 2x Pommes Frites | 276 | Swish  | AVBRUTEN | 134
+2026-02-15 08:52:18 | ORD-007 | 1x Sallad, 1x Mineralvatten | 89.00 | Kortbetalning | SLUTFÖRD | 98
+2026-02-15 08:57:44 | ORD-008 | 2x Cheeseburgare | 129.00 | Kontant | SLUTFÖRD | 142
+2026-02-15 09:03:27 | ORD-009 | 1x Familjemåltid (4 burgare, 4 pommes) | 499.00 | Kortbetalning | SLUTFÖRD | 312
+2026-02-15 09:11:05 | ORD-010 | 1x Glutenfri burgare, 1x Sallad | 157.00 | Swish | SLUTFÖRD | 189
+2026-02-15 09:18:33 | ORD-011 | 3x Milkshake (jordgubb, chocklad, vanilj) | 267.00 | Kortbetalning | SLUTFÖRD | 223
+2026-02-15 09:24:49 | ORD-012 | 2x Pommes Frites (stor) | 98.00 | Kontant | SLUTFÖRD | 112
+2026-02-15 09:29:15 | ORD-013 | 1x Extra stor burgare, 1x Pommes | 154.00 | Kortbetalning | SLUTFÖRD | 176
+2026-02-15 09:35:22 | ORD-014 | 5x Små hamburgare | 295.00 | Kortbetalning | PÅGÅENDE | 267
+2026-02-15 09:38:47 | ORD-015 | 2x Kaffe, 2x Bulle | 78.00 | Swish | SLUTFÖRD | 89
+2026-02-15 09:42:13 | ORD-016 | 1x Barnmeny med leksak | 89.00 | Kontant | SLUTFÖRD | 123
+2026-02-15 09:47:56 | ORD-017 | 3x Pommes Frites, 2x Dip | 189.00 | Kortbetalning | SLUTFÖRD | 156
+2026-02-15 09:53:28 | ORD-018 | 1x Proteinburgare, 1x Vatten | 134.00 | Swish | FEL | 0
+2026-02-15 09:58:44 | ORD-019 | 2x Dubbelburgare m/ bacon | 198.00 | Kortbetalning | SLUTFÖRD | 201
+2026-02-15 10:05:19 | ORD-020 | 4x Milkshake | 356.00 | Kortbetalning | SLUTFÖRD | 289
+
+# Daglig statistik - 2026-02-15
+# Totalt antal ordrar: 20
+# Slutförda: 17
+# Avbruten: 1
+# Fel: 1
+# Pågående: 1
+# Total försäljning: 4 105.50 kr
+# Genomsnittlig tid per order: 183 sekunder
+# Mest populära produkt: Cheeseburgare (4 st)
+
+2026-02-16 08:15:22 | ORD-021 | 2x Frukostmacka, 2x Kaffe | 148.00 | Kortbetalning | SLUTFÖRD | 134
+2026-02-16 08:22:37 | ORD-022 | 1x Cheeseburgare, 1x Juice | 109.00 | Swish | SLUTFÖRD | 121
+2026-02-16 08:28:54 | ORD-023 | 3X pommes Frites | 147.00 | Kontant | SLUTFÖRD | 98
+2026-02-16 08:34:12 | ORD-024 | 2x Vegoburgare | 178.00 | Kortbetalning | SLUTFÖRD | 167
+2026-02-16 08:39:45 | ORD-025 | 1x Backonburgare m/extra bacon | 99.00 | Swish | SLUTFÖRD | 145

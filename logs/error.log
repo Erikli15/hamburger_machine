@@ -1,0 +1,39 @@
+[2026-02-25 08:23:45] ERROR - Temprature sensor T-102 (Fritös 2) rapportrar onormalt värder: 215°C, förväntat intervall: 170-190°C. Säkerhetsavstängning aktiverad.
+[2026-02-15 08:23:46] ERROR - SafetyMonitor: Kritiskt övertemperaturlarm i fritös 2. Nödavstängning utförd.
+[2026-02-15 08:24:12] ERROR - Misslyckad kalibrering av temperatursensor T-102. Åtrställning misslyckades.
+
+[2026-02-15 09:47:23] ERROR - Robotarm RA-01: Rörelse utanför tillåtet arbetsomåde. Position: X:450, Y:320, Z:180, (max X:400)
+[2026-02-15 09:47:24] ERROR - SafetyMonitor: Robotsäkerhetszon överträdd. Omedelbart stopp utfört.
+
+[2026-02-15 11:12:05] ERROR - Betalningsterminal BT-03: Kommunikationsfel med kortläsare. Enhet svarar inte på ping.
+[2026-02-15 11:12:06] ERROR - PaymentInterface: Transaktion #TXN-8943 misslyckades - timeout vid kortavläsning
+
+[2026-02-15 12:33:18] ERROR - Ingredienssensor IS-45 (Köttfärs): Viktavvikelse detekterad. Förväntat: 5000g +100g, Uppmätt: 3245g
+[2026-02-15 12:33:19] ERROR - InventoryTracker: Kritisk låg nivå av nötfärs. Nuvarande lager: 3.2 kg, Minimum: 5 kg
+
+[2026-02-15 13:45:02] ERROR - Frysfack FF-02: Tempratur för hög: -8°C (gränsvärde: -18°C). Dörrkontakt indikerar stängd.
+[2026-02-15 13:45:03] ERROR - Kylsystm: Kompressor svarar inte aktiveringssignal. Felkod: 0xE4
+
+[2026-02-15 14:22:37] ERROR - OrderProcessor: Order #ORD-2345 kunde inte processas - ingrediens "hamburgerdressing" saknas i dispnser D-07
+[2026-02-15 14:22:38] ERROR - RecipeManager: Recept "Deluxe Burgare" Kan inte slutföras - kritisk ingrediens saknas
+
+[2026-02-15 15:08:51] ERROR - Databas connection pool: Max anslutningar nådd (20/20). Ny anslutning nekad.
+[2026-02-15 15:08:52] ERROR - Databas: Orderhistorik kunde inte loggas - inget ledig databasanslutning
+
+[2026-02-15 16:30:15] ERROR - Transportband TB-01: Motor överström detekterad: 4.2 A (max 3.5 A). Mekaniskt hinder misstänks.
+[2026-02-15 16:30:16] ERROR - Conveyor: Nödstopp aktiverat - Transportbrand position: 2.4 m
+
+[2026-02-15 17:55:43] ERROR - Grillplatta GP-01: Ojämn temperaturfördlning. Vänster sida: 185°C, Höger sida: 210°C
+[2026-02-15 17:55:44] ERROR - GrillController: Automatisk omkalibrering misslyckades - service behövs
+
+[2026-02-15 19:12:29] ERROR - Nödstopp NÖ-01: Aktiverat manuellt vid position: Huvudentré
+[2026-02-15 19:12:30] ERROR - SafetyMonitor: System i nödläge - alla rörliga delar stoppade
+
+[2026-02-15 20:45:12] ERROR - Diskhantering: Loggpartition /dev/sda3 98% full (18.2 GB/18.6 GB)
+[2026-02-15 20:45:13] ERROR - Logger: Kan inte skriva till system.log - diskutrymme slutföras
+
+[2026-02-15 22:03:47] ERROR - API Gateway: Timeout mot betalningsleverantör efter 30 s. Transaktion #TXN-9012 avbruten.
+[2026-02-15 22:03:48] ERROR - PaymentAPI: Retry-försök (3/3) misslyckades - tjänsten svarar inte
+
+[2026-02-15 23:30:22] ERROR - Självtest: Kritisk komponent "temperatureglering fritös" svarar inte
+[2026-02-15 23:30:23] ERROR - Systemd: Tvingad omstart av trmperaturservice misslyckades
